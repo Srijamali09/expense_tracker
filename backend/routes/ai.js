@@ -4,22 +4,26 @@ const router = express.Router();
 router.post('/categorise', async (req, res) => {
   try {
     const { description } = req.body;
-    const categories = [
-      'Food', 'Transport', 'Shopping', 'Entertainment',
-      'Health', 'Education', 'Bills', 'Other'
-    ];
-    const prompt = `Given this expense description: "${description}", which category does it belong to? Choose exactly one from: ${categories.join(', ')}. Reply with just the category name, nothing else.`;
+    const text = description.toLowerCase();
 
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + process.env.GEMINI_API_KEY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
+    let category = 'Other';
 
-    const data = await response.json();
-    const category = data.candidates[0].content.parts[0].text.trim();
+    if (text.match(/zomato|swiggy|food|restaurant|pizza|burger|biryani|coffee|tea|eat|lunch|dinner|breakfast|snack/)) {
+      category = 'Food';
+    } else if (text.match(/uber|ola|auto|bus|train|metro|fuel|petrol|diesel|cab|taxi|travel|flight|ticket/)) {
+      category = 'Transport';
+    } else if (text.match(/amazon|flipkart|shopping|clothes|shirt|shoes|dress|myntra|meesho|buy|purchase/)) {
+      category = 'Shopping';
+    } else if (text.match(/movie|netflix|spotify|game|concert|party|entertainment|hotstar|prime|youtube/)) {
+      category = 'Entertainment';
+    } else if (text.match(/doctor|hospital|medicine|pharmacy|health|gym|fitness|medical|clinic/)) {
+      category = 'Health';
+    } else if (text.match(/course|book|school|college|tuition|education|udemy|learning|class/)) {
+      category = 'Education';
+    } else if (text.match(/electricity|water|rent|wifi|internet|phone|mobile|bill|recharge|subscription/)) {
+      category = 'Bills';
+    }
+
     res.json({ category });
   } catch (error) {
     res.status(500).json({ error: error.message });
