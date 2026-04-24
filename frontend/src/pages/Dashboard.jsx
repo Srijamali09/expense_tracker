@@ -18,9 +18,7 @@ function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
+  useEffect(() => { fetchExpenses(); }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -28,21 +26,38 @@ function Dashboard() {
   };
 
   const total = expenses.reduce((sum, e) => sum + parseFloat(e.amount), 0);
+  const topCategory = expenses.length > 0
+    ? Object.entries(expenses.reduce((acc, e) => {
+        acc[e.category] = (acc[e.category] || 0) + 1;
+        return acc;
+      }, {})).sort((a, b) => b[1] - a[1])[0][0]
+    : 'None';
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>Expense Tracker</h1>
-        <button onClick={handleLogout} style={{ padding: '8px 16px', background: '#f44336', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-          Logout
-        </button>
+    <div className="dashboard">
+      <nav className="navbar">
+        <div className="navbar-logo">💰 ExpenseTracker</div>
+        <button className="btn-logout" onClick={handleLogout}>Logout</button>
+      </nav>
+      <div className="dashboard-content">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="label">Total Spent</div>
+            <div className="value purple">₹{total.toFixed(2)}</div>
+          </div>
+          <div className="stat-card">
+            <div className="label">Transactions</div>
+            <div className="value">{expenses.length}</div>
+          </div>
+          <div className="stat-card">
+            <div className="label">Top Category</div>
+            <div className="value" style={{ fontSize: '1.2rem' }}>{topCategory}</div>
+          </div>
+        </div>
+        <AddExpense onExpenseAdded={fetchExpenses} />
+        <SpendingChart expenses={expenses} />
+        <ExpenseList expenses={expenses} onExpenseDeleted={fetchExpenses} />
       </div>
-      <div style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', textAlign: 'center' }}>
-        <h2>Total Spent: ₹{total.toFixed(2)}</h2>
-      </div>
-      <AddExpense onExpenseAdded={fetchExpenses} />
-      <SpendingChart expenses={expenses} />
-      <ExpenseList expenses={expenses} onExpenseDeleted={fetchExpenses} />
     </div>
   );
 }
