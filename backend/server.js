@@ -8,7 +8,12 @@ const aiRoutes = require('./routes/ai');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://expense-tracker-gaq7jkrc4-srijamali09s-projects.vercel.app'
+  ]
+}))
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
