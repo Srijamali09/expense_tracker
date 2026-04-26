@@ -8,16 +8,21 @@ const aiRoutes = require('./routes/ai');
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://expense-tracker-gaq7jkrc4-srijamali09s-projects.vercel.app',
+  'https://expense-tracker-taupe-alpha-27.vercel.app'
+];
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://expense-tracker-gaq7jkrc4-srijamali09s-projects.vercel.app',
-    'https://expense-tracker-taupe-alpha-27.vercel.app'
-  ],
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}))
+}));
+
+app.options('*', cors());
+
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
