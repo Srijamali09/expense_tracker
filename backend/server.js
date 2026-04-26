@@ -11,8 +11,12 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://expense-tracker-gaq7jkrc4-srijamali09s-projects.vercel.app'
-  ]
+    'https://expense-tracker-gaq7jkrc4-srijamali09s-projects.vercel.app',
+    'https://expense-tracker-taupe-alpha-27.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }))
 app.use(express.json());
 
