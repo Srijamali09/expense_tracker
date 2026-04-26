@@ -19,15 +19,27 @@ function SpendingChart({ expenses }) {
   return (
     <div className="chart-card">
       <h3>📊 Spending by Category</h3>
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={320}>
         <PieChart>
-          <Pie data={data} cx="50%" cy="50%" outerRadius={100} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            outerRadius={110}
+            dataKey="value"
+            labelLine={false}
+          >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip formatter={(value) => `₹${value}`} contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }} />
-          <Legend />
+          <Tooltip
+            formatter={(value, name) => [`₹${value}`, name]}
+            contentStyle={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+          />
+          <Legend
+            formatter={(value, entry) => `${value} (${((entry.payload.value / data.reduce((s, d) => s + d.value, 0)) * 100).toFixed(0)}%)`}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>
